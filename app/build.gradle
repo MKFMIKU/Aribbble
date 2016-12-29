@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
+    dataBinding.enabled = true
     defaultConfig {
         applicationId "com.kfnoon.huanm.aribbble"
         minSdkVersion 21
@@ -26,4 +27,8 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.0.0'
     testCompile 'junit:junit:4.12'
+}
+
+dependencies {
+    compile 'com.squareup.okhttp3:okhttp:3.5.0'
 }
