@@ -1,6 +1,5 @@
 package com.kfnoon.huanm.aribbble.model;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.Serializable;
@@ -14,7 +13,7 @@ public class Shot {
         public Boolean gif;
 
         public ShotObject(JSONObject json) throws JSONException{
-            imageId = json.optInt("imageId");
+            imageId = json.optString("imageId");
             views = json.optInt("views");
             cmnt = json.optInt("cmnt");
             fav = json.optInt("fav");
