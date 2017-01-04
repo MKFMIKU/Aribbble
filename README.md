@@ -4,6 +4,8 @@ A beautiful Material Desgin Dribble app for Android Edit.
 
 Which is my sparetime project to improve my java skill.
 
+![](http://ww2.sinaimg.cn/large/006mwlTsgw1fbf0q0zwcej30o809z74w.jpg)
+
 ***
 
 The api is provide by Dribbble.
