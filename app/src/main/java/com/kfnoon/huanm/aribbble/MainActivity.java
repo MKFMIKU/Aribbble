@@ -1,5 +1,6 @@
 package com.kfnoon.huanm.aribbble;
 
+import com.kfnoon.huanm.aribbble.api.BaseClient;
 import com.kfnoon.huanm.aribbble.model.Shot;
 
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,6 +17,9 @@ import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    private int pages;
     private List<Shot> shotList = new ArrayList<Shot>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +41,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initData(){
+        pages = 0;
+        Call<List<Shot>> call = new BaseClient().mApiService.getShots(pages);
+        call.enqueue(new Callback<List<Shot>>() {
+            @Override
+            public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
+                Log.d(response.body().get(0).imageUrl);
+            }
+
+            @Override
+            public void onFailure(Call<List<Shot>> call, Throwable t) {
+
+            }
+        });
 
     }
 
