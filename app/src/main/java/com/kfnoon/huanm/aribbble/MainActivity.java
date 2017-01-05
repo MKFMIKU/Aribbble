@@ -1,8 +1,10 @@
 package com.kfnoon.huanm.aribbble;
 
+import com.kfnoon.huanm.aribbble.adapter.ShotsAdapter;
 import com.kfnoon.huanm.aribbble.api.BaseClient;
 import com.kfnoon.huanm.aribbble.model.Shot;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -39,15 +41,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mRecyclerView = (RecyclerView) findViewById(R.id.shotsList);
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this,2));
         initData();
     }
 
-    private void initUi() {
-
+    private void initUi(List<Shot> shots) {
+        ShotsAdapter shotsAdapter = new ShotsAdapter(getApplicationContext(), shots);
+        mRecyclerView.setAdapter(shotsAdapter);
     }
 
     private void initData(){
@@ -59,34 +61,9 @@ public class MainActivity extends AppCompatActivity {
                 .subscribe(new Action1<List<Shot>>() {
                     @Override
                     public void call(List<Shot> shots) {
-                        initUi();
+                        initUi(shots);
                     }
                 });
 
-    }
-
-    public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-
-            public ViewHolder(View itemView) {
-                super(itemView);
-            }
-        }
-
-        @Override
-        public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return null;
-        }
-
-        @Override
-        public void onBindViewHolder(MyAdapter.ViewHolder holder, int position) {
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return 0;
-        }
     }
 }
