@@ -42,18 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initData(){
         pages = 0;
-        Call<List<Shot>> call = new BaseClient().mApiService.getShots(pages);
-        call.enqueue(new Callback<List<Shot>>() {
-            @Override
-            public void onResponse(Call<List<Shot>> call, Response<List<Shot>> response) {
-                Log.d(response.body().get(0).imageUrl);
-            }
-
-            @Override
-            public void onFailure(Call<List<Shot>> call, Throwable t) {
-
-            }
-        });
 
     }
 
