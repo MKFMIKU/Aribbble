@@ -7,7 +7,8 @@ public class Shot implements Serializable{
     public int views_count;
     public int comments_count;
     public int likes_count;
-
+    public String[] tags;
+    
     public static class Images{
         String hidpi;
         public String teaser;
