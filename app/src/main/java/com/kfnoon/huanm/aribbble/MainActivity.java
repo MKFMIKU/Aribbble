@@ -20,6 +20,11 @@ import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import rx.Scheduler;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     private int pages;
     private List<Shot> shotList = new ArrayList<Shot>();
+    private Subscription mSubscription;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,10 +44,25 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         initData();
+        initUi();
+    }
+
+    private void initUi() {
+        Log.e("NETWORK","OK");
     }
 
     private void initData(){
         pages = 0;
+        mSubscription = BaseClient.instance()
+                .getShots(pages)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<Shot>>() {
+                    @Override
+                    public void call(List<Shot> shots) {
+                        initUi();
+                    }
+                });
 
     }
 

@@ -15,10 +15,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import rx.Observable;
 
 public class BaseClient {
 
-    public ApiService mApiService;
+    private final ApiService mApiService;
+    private static volatile BaseClient sInstance;
+
+    public static BaseClient instance() {
+        return sInstance == null ? sInstance = new BaseClient() : sInstance;
+    }
 
     public BaseClient() {
         OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
@@ -43,11 +49,19 @@ public class BaseClient {
 
     }
 
+    public Observable<List<Shot>> getShots(int page){
+        return mApiService.getShots(page);
+    }
+
+    public Observable<Shot> getShot(int id){
+        return mApiService.getShot(id);
+    }
+
     private interface ApiService {
         @GET("shots")
-        Call<List<Shot>> getShots(@Query("page") int page);
+        Observable<List<Shot>> getShots(@Query("page") int page);
 
         @GET("shots/{id}")
-        Call<Shot> getShot(@Path("id") int id);
+        Observable<Shot> getShot(@Path("id") int id);
     }
 }
