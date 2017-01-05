@@ -1,5 +1,7 @@
 # Aribbble
 
+[![Build Status](https://travis-ci.org/MKFMIKU/Aribbble.svg?branch=master)](https://travis-ci.org/MKFMIKU/Aribbble)
+
 A beautiful Material Desgin Dribbble app for Android (Unofficial).
 
 Which would like to inspiring your degin from the shots in Dribbble.
