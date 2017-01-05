@@ -44,11 +44,10 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         initData();
-        initUi();
     }
 
     private void initUi() {
-        Log.e("NETWORK","OK");
+
     }
 
     private void initData(){
