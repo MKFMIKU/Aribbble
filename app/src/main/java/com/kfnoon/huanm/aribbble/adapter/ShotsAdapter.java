@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.kfnoon.huanm.aribbble.MainActivity;
 import com.kfnoon.huanm.aribbble.R;
 import com.kfnoon.huanm.aribbble.model.Shot;
+import com.kfnoon.huanm.aribbble.utils.StringUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -33,10 +34,9 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.MyViewHolder
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Picasso.with(context).load(shotList.get(position).images.teaser).into(holder.imageView);
-        holder.textComments.setText(String.valueOf(shotList.get(position).comments_count));
-        holder.textLikes.setText(String.valueOf(shotList.get(position).likes_count));
-        holder.textViews.setText(String.valueOf(shotList.get(position).views_count));
+        Picasso.with(context).load(shotList.get(position).images.normal).into(holder.shotImage);
+        holder.shotTitle.setText(StringUtils.SubString(shotList.get(position).title, 16));
+        holder.shotUser.setText(String.valueOf(shotList.get(position).user.name));
     }
 
     @Override
@@ -45,16 +45,14 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.MyViewHolder
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
-        TextView textViews;
-        TextView textComments;
-        TextView textLikes;
+        ImageView shotImage;
+        TextView shotTitle;
+        TextView shotUser;
         public MyViewHolder(View inflate) {
             super(inflate);
-            imageView = (ImageView) inflate.findViewById(R.id.image_teaser);
-            textViews = (TextView) inflate.findViewById(R.id.views_count);
-            textLikes = (TextView) inflate.findViewById(R.id.likes_count);
-            textComments = (TextView) inflate.findViewById(R.id.comments_count);
+            shotImage = (ImageView) inflate.findViewById(R.id.image_normal);
+            shotTitle = (TextView) inflate.findViewById(R.id.shotTitle);
+            shotUser = (TextView) inflate.findViewById(R.id.shotUser);
         }
     }
 }
