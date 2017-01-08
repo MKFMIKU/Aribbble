@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,7 @@ import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ProgressBar loadingView;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -31,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        loadingView = (ProgressBar) findViewById(R.id.loading);
         mRecyclerView = (RecyclerView) findViewById(R.id.shotsList);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this,2));
@@ -38,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initUi(final List<Shot> shots) {
+        loadingView.setVisibility(View.GONE);
         ShotsAdapter shotsAdapter = new ShotsAdapter(getApplicationContext(), shots);
         shotsAdapter.getPostionClicks().subscribe(new Action1<Integer>() {
             @Override
