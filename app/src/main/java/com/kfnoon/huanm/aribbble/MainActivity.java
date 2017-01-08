@@ -3,26 +3,16 @@ package com.kfnoon.huanm.aribbble;
 import com.kfnoon.huanm.aribbble.adapter.ShotsAdapter;
 import com.kfnoon.huanm.aribbble.api.BaseClient;
 import com.kfnoon.huanm.aribbble.model.Shot;
+import com.kfnoon.huanm.aribbble.ui.ShotActivity;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import rx.Scheduler;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -47,8 +37,14 @@ public class MainActivity extends AppCompatActivity {
         initData();
     }
 
-    private void initUi(List<Shot> shots) {
+    private void initUi(final List<Shot> shots) {
         ShotsAdapter shotsAdapter = new ShotsAdapter(getApplicationContext(), shots);
+        shotsAdapter.getPostionClicks().subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                startActivity(new Intent(MainActivity.this, ShotActivity.class).putExtra("id", integer));
+            }
+        });
         mRecyclerView.setAdapter(shotsAdapter);
     }
 

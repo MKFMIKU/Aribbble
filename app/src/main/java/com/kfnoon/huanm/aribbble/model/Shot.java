@@ -3,6 +3,7 @@ package com.kfnoon.huanm.aribbble.model;
 import java.io.Serializable;
 
 public class Shot implements Serializable{
+    public int id;
     public Images images;
     public String title;
     public int views_count;

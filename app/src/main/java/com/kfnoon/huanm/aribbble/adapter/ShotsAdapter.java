@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -24,13 +25,18 @@ import com.squareup.picasso.Target;
 
 import java.util.List;
 
+import rx.Observable;
+import rx.subjects.PublishSubject;
+
 public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.MyViewHolder>{
     private List<Shot> shotList;
     private Context context;
+    private final PublishSubject<Integer> onCLickSubject = PublishSubject.create();
     public ShotsAdapter(Context context,List<Shot> data){
         this.context = context;
         this.shotList = data;
     }
+
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.shot, parent, false);
@@ -69,7 +75,12 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.MyViewHolder
         });
         holder.shotTitle.setText(StringUtils.SubString(shotList.get(position).title, 12));
         holder.shotUser.setText(String.valueOf(shotList.get(position).user.name));
-
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onCLickSubject.onNext(shotList.get(position).id);
+            }
+        });
     }
 
     @Override
@@ -77,11 +88,12 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.MyViewHolder
         return shotList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder{
         ImageView shotImage;
         TextView shotTitle;
         TextView shotUser;
         RelativeLayout bottomList;
+
         public MyViewHolder(View inflate) {
             super(inflate);
             shotImage = (ImageView) inflate.findViewById(R.id.image_normal);
@@ -89,5 +101,10 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.MyViewHolder
             shotUser = (TextView) inflate.findViewById(R.id.shotUser);
             bottomList = (RelativeLayout) inflate.findViewById(R.id.bottomList);
         }
+
+    }
+
+    public Observable<Integer> getPostionClicks(){
+        return onCLickSubject.asObservable();
     }
 }
