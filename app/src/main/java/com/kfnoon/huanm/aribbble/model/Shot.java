@@ -9,12 +9,13 @@ public class Shot implements Serializable{
     public int views_count;
     public int comments_count;
     public int likes_count;
+    public Boolean animated;
     public String[] tags;
     public User user;
     
     public static class Images{
         public String hidpi;
-        public String teaser;
         public String normal;
+        public String teaser;
     }
 }

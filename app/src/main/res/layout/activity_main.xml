@@ -6,13 +6,18 @@
     android:layout_height="match_parent"
     tools:context="com.kfnoon.huanm.aribbble.MainActivity">
 
-
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/shotsList"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </android.support.v7.widget.RecyclerView>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/shotsList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <ProgressBar
         android:id="@+id/loading"

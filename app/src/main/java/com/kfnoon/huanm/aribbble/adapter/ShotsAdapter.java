@@ -51,11 +51,10 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.MyViewHolder
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 Palette.Builder builder = new Palette.Builder(bitmap);
-                builder.maximumColorCount(2);
                 builder.generate(new Palette.PaletteAsyncListener() {
                     @Override
                     public void onGenerated(Palette palette) {
-                        Palette.Swatch swatch = palette.getSwatches().get(0);
+                        Palette.Swatch swatch = palette.getMutedSwatch();
                         if(swatch!=null){
                             holder.bottomList.setBackgroundColor(swatch.getRgb());
                         }

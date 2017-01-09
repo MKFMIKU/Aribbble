@@ -6,10 +6,12 @@ import com.kfnoon.huanm.aribbble.model.Shot;
 import com.kfnoon.huanm.aribbble.ui.ShotActivity;
 
 import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -24,8 +26,9 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressBar loadingView;
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private ShotsAdapter shotsAdapter;
+    private GridLayoutManager mLayoutManager;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private int pages;
     private List<Shot> shotList = new ArrayList<Shot>();
@@ -36,15 +39,36 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         loadingView = (ProgressBar) findViewById(R.id.loading);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         mRecyclerView = (RecyclerView) findViewById(R.id.shotsList);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        mLayoutManager = new GridLayoutManager(this, 2);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         initData();
+
+        swipeRefreshLayout.setEnabled(false);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int lastVisible = 0;
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(newState == RecyclerView.SCROLL_STATE_IDLE && lastVisible+1 == shotsAdapter.getItemCount()){
+                    swipeRefreshLayout.setRefreshing(true);
+                    updateData(lastVisible);
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                lastVisible = mLayoutManager.findLastVisibleItemPosition();
+            }
+        });
     }
 
-    private void initUi(final List<Shot> shots) {
+    private void initUi() {
         loadingView.setVisibility(View.GONE);
-        ShotsAdapter shotsAdapter = new ShotsAdapter(getApplicationContext(), shots);
+        shotsAdapter = new ShotsAdapter(getApplicationContext(), shotList);
         shotsAdapter.getPostionClicks().subscribe(new Action1<Integer>() {
             @Override
             public void call(Integer integer) {
@@ -52,10 +76,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         mRecyclerView.setAdapter(shotsAdapter);
+
     }
 
     private void initData(){
-        pages = 0;
+        pages = 1;
         mSubscription = BaseClient.instance()
                 .getShots(pages)
                 .subscribeOn(Schedulers.io())
@@ -63,7 +88,25 @@ public class MainActivity extends AppCompatActivity {
                 .subscribe(new Action1<List<Shot>>() {
                     @Override
                     public void call(List<Shot> shots) {
-                        initUi(shots);
+                        shotList = shots;
+                        initUi();
+                    }
+                });
+
+    }
+
+    private void updateData(final int postion){
+        pages++;
+        mSubscription = BaseClient.instance()
+                .getShots(pages)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<Shot>>() {
+                    @Override
+                    public void call(List<Shot> shots) {
+                        shotList.addAll(shots);
+                        swipeRefreshLayout.setRefreshing(false);
+                        shotsAdapter.notifyItemInserted(postion+1);
                     }
                 });
 
