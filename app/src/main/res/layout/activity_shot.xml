@@ -7,9 +7,10 @@
     tools:context="com.kfnoon.huanm.aribbble.ui.ShotActivity">
 
    <ImageView
+       android:scaleType="centerCrop"
        android:id="@+id/shotHidpi"
        android:layout_width="match_parent"
-       android:layout_height="wrap_content" />
+       android:layout_height="270dp" />
 
    <ProgressBar
        android:indeterminateTint="@color/colorPrimary"

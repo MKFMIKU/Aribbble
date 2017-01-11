@@ -24,6 +24,7 @@ import rx.schedulers.Schedulers;
 public class ShotActivity extends Activity {
 
     private int ShotId;
+    private Shot mShot;
     private Subscription mSubscription;
     private ImageView shotHidpi;
     private ProgressBar shotLoading;
@@ -39,10 +40,16 @@ public class ShotActivity extends Activity {
         shotLoading = (ProgressBar) findViewById(R.id.shotLoading);
 
         initData();
+
+        shotHidpi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ShotActivity.this, ShotImage.class).putExtra("url", mShot.images.hidpi));
+            }
+        });
     }
 
     private void initData() {
-        int testId = 3200714;
         mSubscription = BaseClient.instance()
                 .getShot(ShotId)
                 .subscribeOn(Schedulers.io())
@@ -50,16 +57,17 @@ public class ShotActivity extends Activity {
                 .subscribe(new Action1<Shot>() {
                     @Override
                     public void call(Shot shot) {
-                        initUi(shot);
+                        mShot = shot;
+                        initUi();
                     }
                 });
     }
 
-    private void initUi(Shot mShot){
+    private void initUi(){
         shotLoading.setVisibility(View.GONE);
         if(mShot.animated)
-            Glide.with(this).load(mShot.images.hidpi).asGif().into(shotHidpi);
+            Glide.with(this).load(mShot.images.hidpi).asGif().crossFade().into(shotHidpi);
         else
-            Glide.with(this).load(mShot.images.hidpi).into(shotHidpi);
+            Glide.with(this).load(mShot.images.hidpi).crossFade().into(shotHidpi);
     }
 }

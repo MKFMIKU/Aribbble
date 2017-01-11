@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private ShotsAdapter shotsAdapter;
     private GridLayoutManager mLayoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private Boolean loading;
 
     private int pages;
     private List<Shot> shotList = new ArrayList<Shot>();
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
         initData();
+        loading = false;
 
         swipeRefreshLayout.setEnabled(false);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -52,9 +54,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if(newState == RecyclerView.SCROLL_STATE_IDLE && lastVisible+1 == shotsAdapter.getItemCount()){
+                if(newState == RecyclerView.SCROLL_STATE_IDLE && lastVisible+1 == shotsAdapter.getItemCount() && !loading){
                     swipeRefreshLayout.setRefreshing(true);
                     updateData(lastVisible);
+                    loading = true;
                 }
             }
 
@@ -107,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
                         shotList.addAll(shots);
                         swipeRefreshLayout.setRefreshing(false);
                         shotsAdapter.notifyItemInserted(postion+1);
+                        loading = false;
                     }
                 });
 
