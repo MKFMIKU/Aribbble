@@ -88,6 +88,12 @@ public class MainActivity extends AppCompatActivity {
                 .getShots(pages)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                })
                 .subscribe(new Action1<List<Shot>>() {
                     @Override
                     public void call(List<Shot> shots) {

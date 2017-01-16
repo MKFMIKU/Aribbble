@@ -24,7 +24,7 @@ public class ShotImage extends AppCompatActivity {
 
         mImageView = (PhotoView) findViewById(R.id.shotImage);
         mAttacher = new PhotoViewAttacher(mImageView);
-        Glide.with(this).load(mshotUrl).into(mImageView);
+        Glide.with(getApplicationContext()).load(mshotUrl).into(mImageView);
         mAttacher.update();
     }
 }

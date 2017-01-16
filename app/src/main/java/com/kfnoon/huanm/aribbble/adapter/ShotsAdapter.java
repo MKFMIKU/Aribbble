@@ -1,27 +1,18 @@
 package com.kfnoon.huanm.aribbble.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.kfnoon.huanm.aribbble.MainActivity;
+import com.bumptech.glide.Glide;
 import com.kfnoon.huanm.aribbble.R;
 import com.kfnoon.huanm.aribbble.model.Shot;
 import com.kfnoon.huanm.aribbble.utils.StringUtils;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.util.List;
 
@@ -46,32 +37,7 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.MyViewHolder
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        Picasso.with(context).load(shotList.get(position).images.normal).into(holder.shotImage);
-        Picasso.with(context).load(shotList.get(position).images.normal).into(new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                Palette.Builder builder = new Palette.Builder(bitmap);
-                builder.generate(new Palette.PaletteAsyncListener() {
-                    @Override
-                    public void onGenerated(Palette palette) {
-                        Palette.Swatch swatch = palette.getMutedSwatch();
-                        if(swatch!=null){
-                            holder.bottomList.setBackgroundColor(swatch.getRgb());
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        });
+        Glide.with(context).load(shotList.get(position).images.normal).into(holder.shotImage);
         holder.shotTitle.setText(StringUtils.SubString(shotList.get(position).title, 12));
         holder.shotUser.setText(String.valueOf(shotList.get(position).user.name));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -80,6 +46,7 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.MyViewHolder
                 onCLickSubject.onNext(shotList.get(position).id);
             }
         });
+        holder.shotAnimated.setVisibility(shotList.get(position).animated?View.VISIBLE:View.GONE);
     }
 
     @Override
@@ -91,6 +58,7 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.MyViewHolder
         ImageView shotImage;
         TextView shotTitle;
         TextView shotUser;
+        TextView shotAnimated;
         RelativeLayout bottomList;
 
         public MyViewHolder(View inflate) {
@@ -99,6 +67,7 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.MyViewHolder
             shotTitle = (TextView) inflate.findViewById(R.id.shotTitle);
             shotUser = (TextView) inflate.findViewById(R.id.shotUser);
             bottomList = (RelativeLayout) inflate.findViewById(R.id.bottomList);
+            shotAnimated = (TextView) inflate.findViewById(R.id.shotAnimated);
         }
 
     }

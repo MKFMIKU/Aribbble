@@ -56,4 +56,20 @@
             android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/shotAnimated"
+        android:background="@drawable/animated"
+        android:textColor="#ffffff"
+        android:layout_margin="10dp"
+        android:text="GIF"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:textSize="10sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>
