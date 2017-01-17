@@ -12,6 +12,7 @@ public class Shot implements Serializable{
     public Boolean animated;
     public String[] tags;
     public User user;
+    public String description;
     
     public static class Images{
         public String hidpi;

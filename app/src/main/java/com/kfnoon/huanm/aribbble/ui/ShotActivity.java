@@ -2,7 +2,9 @@ package com.kfnoon.huanm.aribbble.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -29,7 +31,7 @@ public class ShotActivity extends Activity {
     private Subscription mSubscription;
     private ImageView shotHidpi;
     private ProgressBar shotLoading;
-    private TextView shotName;
+    private TextView shotName,shotDescription;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +44,7 @@ public class ShotActivity extends Activity {
         shotHidpi = (ImageView) findViewById(R.id.shotHidpi);
         shotLoading = (ProgressBar) findViewById(R.id.shotLoading);
         shotName = (TextView) findViewById(R.id.shotName);
+        shotDescription = (TextView) findViewById(R.id.shotDescription);
 
         initData();
 
@@ -69,6 +72,12 @@ public class ShotActivity extends Activity {
 
     private void initUi(){
         shotName.setText(mShot.title);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            shotDescription.setText(Html.fromHtml(mShot.description, Html.FROM_HTML_MODE_LEGACY));
+        }else{
+            shotDescription.setText(Html.fromHtml(mShot.description));
+        }
+
         Glide.with(getApplicationContext())
                 .load(mShot.images.hidpi)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
