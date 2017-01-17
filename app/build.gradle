@@ -1,9 +1,9 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.antfortune.freeline'
 
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
-    dataBinding.enabled = true
     defaultConfig {
         applicationId "com.kfnoon.huanm.aribbble"
         minSdkVersion 21
@@ -11,6 +11,9 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        jackOptions {
+            enabled true
+        }
     }
     buildTypes {
         release {
@@ -20,6 +23,10 @@ android {
     }
     lintOptions {
         abortOnError false
+    }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
     }
 }
 
@@ -31,6 +38,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.1.0'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:recyclerview-v7:25.1.0'
+    compile 'com.android.support:support-v4:25.1.0'
+    compile 'com.android.support:design:25.1.0'
     compile 'com.android.support:support-v4:25.1.0'
 }
 
