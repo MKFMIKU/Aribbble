@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.kfnoon.huanm.aribbble.R;
 import com.kfnoon.huanm.aribbble.adapter.ShotsAdapter;
@@ -36,6 +37,7 @@ public class MainFragment extends Fragment {
     private Boolean loading;
 
     private int pages;
+    private int postion;
     private List<Shot> shotList = new ArrayList<Shot>();
     private Subscription mSubscription;
 
@@ -67,8 +69,9 @@ public class MainFragment extends Fragment {
                 super.onScrollStateChanged(recyclerView, newState);
                 if(newState == RecyclerView.SCROLL_STATE_IDLE && lastVisible+1 == shotsAdapter.getItemCount() && !loading){
                     swipeRefreshLayout.setRefreshing(true);
-                    updateData(lastVisible);
+                    postion = lastVisible;
                     loading = true;
+                    updateData();
                 }
             }
 
@@ -84,6 +87,7 @@ public class MainFragment extends Fragment {
 
 
 
+    //加载第一次数据
     private void initData(){
         pages = 1;
         mSubscription = BaseClient.instance()
@@ -94,6 +98,25 @@ public class MainFragment extends Fragment {
                 .subscribe(this::bind, t->{});
     }
 
+    //上拉加载更多
+    private void updateData(){
+        pages++;
+        mSubscription = BaseClient.instance()
+                .getShots(pages)
+                .doOnError(this::handleError)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::update,t->{});
+
+    }
+
+    //错误处理
+    private void handleError(Throwable throwable) {
+        Log.d("SingleShot","Failed to load",throwable);
+        Toast.makeText(getContext(),"NetWorkError",Toast.LENGTH_SHORT).show();
+    }
+
+    //数据加载
     private void bind(List<Shot> shots) {
         shotList = shots;
         loadingView.setVisibility(View.GONE);
@@ -107,26 +130,12 @@ public class MainFragment extends Fragment {
         mRecyclerView.setAdapter(shotsAdapter);
     }
 
-    private void handleError(Throwable throwable) {
-        Log.d("SingleShot","Failed to load",throwable);
-    }
-
-    private void updateData(final int postion){
-        pages++;
-        mSubscription = BaseClient.instance()
-                .getShots(pages)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<Shot>>() {
-                    @Override
-                    public void call(List<Shot> shots) {
-                        shotList.addAll(shots);
-                        swipeRefreshLayout.setRefreshing(false);
-                        shotsAdapter.notifyItemInserted(postion+1);
-                        loading = false;
-                    }
-                });
-
+    //数据更新
+    private void update(List<Shot> shots) {
+        shotList.addAll(shots);
+        swipeRefreshLayout.setRefreshing(false);
+        shotsAdapter.notifyItemInserted(postion+1);
+        loading = false;
     }
 
 }
