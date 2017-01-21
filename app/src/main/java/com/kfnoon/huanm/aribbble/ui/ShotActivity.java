@@ -22,6 +22,7 @@ import com.kfnoon.huanm.aribbble.model.Shot;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class ShotActivity extends Activity {
@@ -32,7 +33,7 @@ public class ShotActivity extends Activity {
     private ImageView shotHidpi;
     private ProgressBar shotLoading;
     private TextView shotName,shotDescription;
-
+    private Action1<Throwable> handleError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,40 +62,41 @@ public class ShotActivity extends Activity {
     private void initData() {
         mSubscription = BaseClient.instance()
                 .getShot(ShotId)
-                .doOnError(this::handleError)
+                .doOnError(this.handleError)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::bind, t->{});
+                .subscribe(new Action1<Shot>() {
+                    @Override
+                    public void call(Shot shot) {
+                        mShot = shot;
+                        shotName.setText(mShot.title);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            shotDescription.setText(Html.fromHtml(mShot.description, Html.FROM_HTML_MODE_LEGACY));
+                        }else{
+                            shotDescription.setText(Html.fromHtml(mShot.description));
+                        }
+                        Glide.with(getApplicationContext())
+                                .load(mShot.images.hidpi)
+                                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                .listener(new RequestListener<String, GlideDrawable>() {
+                                    @Override
+                                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                        shotLoading.setVisibility(View.GONE);
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                        shotLoading.setVisibility(View.GONE);
+                                        return false;
+                                    }
+                                })
+                                .into(shotHidpi);
+                    }
+                });
     }
 
-    private void bind(Shot shot) {
-        mShot = shot;
-        shotName.setText(mShot.title);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            shotDescription.setText(Html.fromHtml(mShot.description, Html.FROM_HTML_MODE_LEGACY));
-        }else{
-            shotDescription.setText(Html.fromHtml(mShot.description));
-        }
-        Glide.with(this)
-                .load(mShot.images.hidpi)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .listener(new RequestListener<String, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        shotLoading.setVisibility(View.GONE);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        shotLoading.setVisibility(View.GONE);
-                        return false;
-                    }
-                })
-                .into(shotHidpi);
-    }
-
-    private void handleError(Throwable throwable) {
+    private static void handleError(Throwable throwable) {
         Log.d("SingleShot","Failed to load",throwable);
     }
 

@@ -40,6 +40,7 @@ public class MainFragment extends Fragment {
     private int postion;
     private List<Shot> shotList = new ArrayList<Shot>();
     private Subscription mSubscription;
+    private Action1<Throwable> handleError;
 
     public MainFragment() {
         // Required empty public constructor
@@ -92,10 +93,24 @@ public class MainFragment extends Fragment {
         pages = 1;
         mSubscription = BaseClient.instance()
                 .getShots(pages)
-                .doOnError(this::handleError)
+                .doOnError(handleError)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::bind, t->{});
+                .subscribe(new Action1<List<Shot>>() {
+                    @Override
+                    public void call(List<Shot> shots) {
+                        shotList = shots;
+                        loadingView.setVisibility(View.GONE);
+                        shotsAdapter = new ShotsAdapter(getContext(), shotList);
+                        shotsAdapter.getPostionClicks().subscribe(new Action1<Integer>() {
+                            @Override
+                            public void call(Integer integer) {
+                                startActivity(new Intent(getContext(), ShotActivity.class).putExtra("id", integer));
+                            }
+                        });
+                        mRecyclerView.setAdapter(shotsAdapter);
+                    }
+                });
     }
 
     //上拉加载更多
@@ -103,39 +118,17 @@ public class MainFragment extends Fragment {
         pages++;
         mSubscription = BaseClient.instance()
                 .getShots(pages)
-                .doOnError(this::handleError)
+                .doOnError(handleError)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::update,t->{});
-
+                .subscribe(new Action1<List<Shot>>() {
+                    @Override
+                    public void call(List<Shot> shots) {
+                        shotList.addAll(shots);
+                        swipeRefreshLayout.setRefreshing(false);
+                        shotsAdapter.notifyItemInserted(postion+1);
+                        loading = false;
+                    }
+                });
     }
-
-    //错误处理
-    private void handleError(Throwable throwable) {
-        Log.d("SingleShot","Failed to load",throwable);
-        Toast.makeText(getContext(),"NetWorkError",Toast.LENGTH_SHORT).show();
-    }
-
-    //数据加载
-    private void bind(List<Shot> shots) {
-        shotList = shots;
-        loadingView.setVisibility(View.GONE);
-        shotsAdapter = new ShotsAdapter(getContext(), shotList);
-        shotsAdapter.getPostionClicks().subscribe(new Action1<Integer>() {
-            @Override
-            public void call(Integer integer) {
-                startActivity(new Intent(getContext(), ShotActivity.class).putExtra("id", integer));
-            }
-        });
-        mRecyclerView.setAdapter(shotsAdapter);
-    }
-
-    //数据更新
-    private void update(List<Shot> shots) {
-        shotList.addAll(shots);
-        swipeRefreshLayout.setRefreshing(false);
-        shotsAdapter.notifyItemInserted(postion+1);
-        loading = false;
-    }
-
 }
