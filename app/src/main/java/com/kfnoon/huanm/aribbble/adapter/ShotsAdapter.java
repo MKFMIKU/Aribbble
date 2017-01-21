@@ -1,6 +1,7 @@
 package com.kfnoon.huanm.aribbble.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.kfnoon.huanm.aribbble.utils.StringUtils;
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 
 public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.MyViewHolder>{
@@ -27,6 +29,7 @@ public class ShotsAdapter extends RecyclerView.Adapter<ShotsAdapter.MyViewHolder
         this.context = context;
         this.shotList = data;
     }
+
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
