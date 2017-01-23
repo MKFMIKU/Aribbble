@@ -43,7 +43,7 @@
             <TextView
                 android:layout_marginTop="16dp"
                 android:text="MKFMIKU"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="#ffff"
                 android:id="@+id/userName"
@@ -60,49 +60,12 @@
         </LinearLayout>
 
         <ListView
-            android:paddingLeft="24dp"
             android:id="@+id/listMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:choiceMode="singleChoice"
             android:divider="@android:color/darker_gray"
-            android:dividerHeight="1dp">
+            android:dividerHeight="1dp" />
 
-        </ListView>
-
-        <LinearLayout
-            android:paddingLeft="24dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="48dp">
-            <ImageView
-                android:src="@drawable/ic_night"
-                android:layout_width="wrap_content"
-                android:layout_height="24dp" />
-            <TextView
-                android:textSize="14sp"
-                android:text="Night Mode"
-                android:layout_marginLeft="56dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-        <LinearLayout
-            android:paddingLeft="24dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="48dp">
-            <ImageView
-                android:src="@drawable/ic_about"
-                android:layout_width="wrap_content"
-                android:layout_height="24dp" />
-            <TextView
-                android:textSize="14sp"
-                android:text="About Me"
-                android:layout_marginLeft="56dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
     </LinearLayout>
 </android.support.v4.widget.DrawerLayout>
