@@ -64,5 +64,7 @@ public class BaseClient {
 
         @GET("shots/{id}")
         Observable<Shot> getShot(@Path("id") int id);
+
+
     }
 }

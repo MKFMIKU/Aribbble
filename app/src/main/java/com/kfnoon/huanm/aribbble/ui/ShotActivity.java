@@ -2,11 +2,18 @@ package com.kfnoon.huanm.aribbble.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -25,13 +32,15 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-public class ShotActivity extends Activity {
+public class ShotActivity extends AppCompatActivity {
 
     private int ShotId;
     private Shot mShot;
     private Subscription mSubscription;
     private ImageView shotHidpi;
     private ProgressBar shotLoading;
+    private Toolbar toolbar;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
     private TextView shotName,shotDescription;
     private Action1<Throwable> handleError;
 
@@ -41,13 +50,19 @@ public class ShotActivity extends Activity {
 
         setContentView(R.layout.activity_shot);
 
+        toolbar = (Toolbar) findViewById(R.id.shotToolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collaspingToolBar);
+
+
         Intent intent = getIntent();
         ShotId = intent.getIntExtra("id",0);
 
         shotHidpi = (ImageView) findViewById(R.id.shotHidpi);
         shotLoading = (ProgressBar) findViewById(R.id.shotLoading);
-        shotName = (TextView) findViewById(R.id.shotName);
-        shotDescription = (TextView) findViewById(R.id.shotDescription);
 
         initData();
 
@@ -59,6 +74,28 @@ public class ShotActivity extends Activity {
         });
     }
 
+    private void initUi(){
+        collapsingToolbarLayout.setTitle(mShot.title);
+        Glide.with(getApplicationContext())
+                .load(mShot.images.hidpi)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                        shotLoading.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        shotLoading.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .into(shotHidpi);
+    }
+
+
     private void initData() {
         mSubscription = BaseClient.instance()
                 .getShot(ShotId)
@@ -69,35 +106,21 @@ public class ShotActivity extends Activity {
                     @Override
                     public void call(Shot shot) {
                         mShot = shot;
-                        shotName.setText(mShot.title);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            shotDescription.setText(Html.fromHtml(mShot.description, Html.FROM_HTML_MODE_LEGACY));
-                        }else{
-                            shotDescription.setText(Html.fromHtml(mShot.description));
-                        }
-                        Glide.with(getApplicationContext())
-                                .load(mShot.images.hidpi)
-                                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                                .listener(new RequestListener<String, GlideDrawable>() {
-                                    @Override
-                                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                        shotLoading.setVisibility(View.GONE);
-                                        return false;
-                                    }
-
-                                    @Override
-                                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                        shotLoading.setVisibility(View.GONE);
-                                        return false;
-                                    }
-                                })
-                                .into(shotHidpi);
+                        initUi();
                     }
                 });
     }
 
     private static void handleError(Throwable throwable) {
         Log.d("SingleShot","Failed to load",throwable);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.shot, menu);
+
+        return true;
     }
 
 }

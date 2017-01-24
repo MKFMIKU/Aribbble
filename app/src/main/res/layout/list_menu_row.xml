@@ -3,18 +3,19 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingLeft="24dp"
-    android:background="?android:attr/activatedBackgroundIndicator"
+    android:background="?android:attr/selectableItemBackgroundBorderless"
     android:minHeight="?android:attr/listPreferredItemHeightSmall">
 
     <ImageView
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="18dp"
         android:layout_marginBottom="16dp"
         android:src="@drawable/ic_about"
         android:id="@+id/imageViewIcon"
-        android:layout_width="24dp"
-        android:layout_height="24dp" />
+        android:layout_width="16sp"
+        android:layout_height="16sp" />
 
     <TextView
+        android:text="MenuItem"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:textSize="16sp"
