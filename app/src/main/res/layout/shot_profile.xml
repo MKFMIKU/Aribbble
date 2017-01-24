@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="160dp">
+
+        <TextView
+            android:text="Name"
+            android:id="@+id/shotName"
+            android:background="@color/colorPrimary"
+            android:padding="16dp"
+            android:textColor="#fff"
+            android:textSize="24sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
+
+        <LinearLayout
+            android:id="@+id/shotAuthorLayout"
+            android:layout_below="@id/shotName"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/shotAuthorAvatar"
+                android:layout_below="@id/shotName"
+                android:layout_margin="16dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp" />
+
+            <LinearLayout
+                android:paddingTop="8dp"
+                android:paddingBottom="16dp"
+                android:orientation="vertical"
+                android:layout_below="@+id/shotName"
+                android:layout_toEndOf="@+id/shotAuthorAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_marginTop="4dp"
+                    android:text="Author"
+                    android:textColor="#9B9B9B"
+                    android:id="@+id/shotAuthor"
+                    android:textSize="24sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/shotName"
+                    android:layout_alignStart="@+id/shotAuthorProfile" />
+
+                <TextView
+                    android:textColor="#000"
+                    android:text="AuthorProfile"
+                    android:id="@+id/shotAuthorProfile"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/shotAuthor"
+                    android:layout_toEndOf="@+id/shotAuthorAvatar" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_below="@+id/shotAuthorLayout"
+            android:textColor="#000"
+            android:padding="16dp"
+            android:text="Profile"
+            android:id="@+id/shotProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+
+</android.support.v4.widget.NestedScrollView>
+

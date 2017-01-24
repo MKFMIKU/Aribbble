@@ -27,6 +27,7 @@ import com.kfnoon.huanm.aribbble.R;
 import com.kfnoon.huanm.aribbble.api.BaseClient;
 import com.kfnoon.huanm.aribbble.model.Shot;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -38,31 +39,32 @@ public class ShotActivity extends AppCompatActivity {
     private Shot mShot;
     private Subscription mSubscription;
     private ImageView shotHidpi;
-    private ProgressBar shotLoading;
     private Toolbar toolbar;
     private CollapsingToolbarLayout collapsingToolbarLayout;
-    private TextView shotName,shotDescription;
+    private TextView shotName,shotAuthor,shotAuthorProfile,shotProfile;
+    private CircleImageView shotAuthorAvatar;
     private Action1<Throwable> handleError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_shot);
-
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         toolbar = (Toolbar) findViewById(R.id.shotToolbar);
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collaspingToolBar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
         Intent intent = getIntent();
         ShotId = intent.getIntExtra("id",0);
 
         shotHidpi = (ImageView) findViewById(R.id.shotHidpi);
-        shotLoading = (ProgressBar) findViewById(R.id.shotLoading);
+        shotName = (TextView) findViewById(R.id.shotName);
+        shotAuthor = (TextView) findViewById(R.id.shotAuthor);
+        shotAuthorProfile = (TextView) findViewById(R.id.shotAuthorProfile);
+        shotAuthorAvatar = (CircleImageView) findViewById(R.id.shotAuthorAvatar);
+        shotProfile = (TextView) findViewById(R.id.shotProfile);
 
         initData();
 
@@ -75,20 +77,27 @@ public class ShotActivity extends AppCompatActivity {
     }
 
     private void initUi(){
-        collapsingToolbarLayout.setTitle(mShot.title);
+        shotName.setText(mShot.title);
+        shotAuthor.setText(mShot.user.name);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            shotAuthorProfile.setText(Html.fromHtml(mShot.user.bio, Html.FROM_HTML_MODE_LEGACY));
+            shotProfile.setText(Html.fromHtml(mShot.description, Html.FROM_HTML_MODE_LEGACY));
+        }else{
+            shotAuthorProfile.setText(Html.fromHtml(mShot.user.bio));
+            shotProfile.setText(Html.fromHtml(mShot.description));
+        }
+        Glide.with(getApplicationContext()).load(mShot.user.avatar_url).into(shotAuthorAvatar);
         Glide.with(getApplicationContext())
                 .load(mShot.images.hidpi)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .listener(new RequestListener<String, GlideDrawable>() {
                     @Override
                     public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        shotLoading.setVisibility(View.GONE);
                         return false;
                     }
 
                     @Override
                     public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        shotLoading.setVisibility(View.GONE);
                         return false;
                     }
                 })
