@@ -16,9 +16,11 @@ import com.kfnoon.huanm.aribbble.utils.StringUtils
 
 import rx.Observable
 import rx.subjects.PublishSubject
+import java.util.*
 
 class ShotsAdapter(private val context: Context, private val shotList: List<Shot>) : RecyclerView.Adapter<ShotsAdapter.MyViewHolder>() {
     private val onCLickSubject = PublishSubject.create<Int>()
+    private var myShotItems: ArrayList<Shot> = null!!
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -55,6 +57,16 @@ class ShotsAdapter(private val context: Context, private val shotList: List<Shot
         }
 
     }
+
+    fun addShots(shots: List<Shot>){
+        val initPosition = myShotItems.size - 1
+        myShotItems.removeAt(initPosition)
+        notifyItemRemoved(initPosition)
+
+        myShotItems.addAll(shots)
+        notifyItemRangeChanged(initPosition, myShotItems.size + 1)
+    }
+
 
     val postionClicks: Observable<Int>
         get() = onCLickSubject.asObservable()
