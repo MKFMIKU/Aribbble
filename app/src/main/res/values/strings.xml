@@ -15,10 +15,4 @@
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string-array name="menu_array">
-        <item>Popular</item>
-        <item>Recent</item>
-        <item>Debuts</item>
-        <item>Teams</item>
-    </string-array>
 </resources>

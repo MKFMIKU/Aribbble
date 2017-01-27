@@ -1,8 +1,6 @@
 package com.kfnoon.huanm.aribbble.ui;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -13,9 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -71,24 +67,24 @@ public class ShotActivity extends AppCompatActivity {
         shotHidpi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ShotActivity.this, ShotImage.class).putExtra("url", mShot.images.hidpi));
+                startActivity(new Intent(ShotActivity.this, ShotImage.class).putExtra("url", mShot.getImages().getHidpi()));
             }
         });
     }
 
     private void initUi(){
-        shotName.setText(mShot.title);
-        shotAuthor.setText(mShot.user.name);
+        shotName.setText(mShot.getTitle());
+        shotAuthor.setText(mShot.getUser().getName());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            shotAuthorProfile.setText(Html.fromHtml(mShot.user.bio, Html.FROM_HTML_MODE_LEGACY));
-            shotProfile.setText(Html.fromHtml(mShot.description, Html.FROM_HTML_MODE_LEGACY));
+            shotAuthorProfile.setText(Html.fromHtml(mShot.getUser().getBio(), Html.FROM_HTML_MODE_LEGACY));
+            shotProfile.setText(Html.fromHtml(mShot.getDescription(), Html.FROM_HTML_MODE_LEGACY));
         }else{
-            shotAuthorProfile.setText(Html.fromHtml(mShot.user.bio));
-            shotProfile.setText(Html.fromHtml(mShot.description));
+            shotAuthorProfile.setText(Html.fromHtml(mShot.getUser().getBio()));
+            shotProfile.setText(Html.fromHtml(mShot.getDescription()));
         }
-        Glide.with(getApplicationContext()).load(mShot.user.avatar_url).into(shotAuthorAvatar);
+        Glide.with(getApplicationContext()).load(mShot.getUser().getAvatar_url()).into(shotAuthorAvatar);
         Glide.with(getApplicationContext())
-                .load(mShot.images.hidpi)
+                .load(mShot.getImages().getHidpi())
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .listener(new RequestListener<String, GlideDrawable>() {
                     @Override
@@ -106,7 +102,8 @@ public class ShotActivity extends AppCompatActivity {
 
 
     private void initData() {
-        mSubscription = BaseClient.instance()
+        BaseClient client = new BaseClient();
+        mSubscription = client
                 .getShot(ShotId)
                 .doOnError(this.handleError)
                 .subscribeOn(Schedulers.io())

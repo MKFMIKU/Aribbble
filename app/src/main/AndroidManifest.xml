@@ -12,9 +12,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ui.ShotActivity" />
         <activity android:name=".ui.ShotImage" />
-        <activity android:name=".ui.HomeActivity">
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
+        <activity android:name=".Init">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
