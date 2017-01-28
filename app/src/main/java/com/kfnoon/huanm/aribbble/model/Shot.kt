@@ -15,5 +15,6 @@ data class Shot(
         var likes_count: Int,
         var animated: Boolean,
         var tags: List<String>,
+        var description: String,
         var user: User
 )

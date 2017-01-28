@@ -2,11 +2,11 @@ package com.kfnoon.huanm.aribbble.adapter
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
 
 import com.bumptech.glide.Glide
@@ -18,9 +18,9 @@ import rx.Observable
 import rx.subjects.PublishSubject
 import java.util.*
 
-class ShotsAdapter(private val context: Context, private val shotList: List<Shot>) : RecyclerView.Adapter<ShotsAdapter.MyViewHolder>() {
+class ShotsAdapter(private val context: Context) : RecyclerView.Adapter<ShotsAdapter.MyViewHolder>() {
     private val onCLickSubject = PublishSubject.create<Int>()
-    private var myShotItems: ArrayList<Shot> = null!!
+    private var myShotItems: ArrayList<Shot> = ArrayList()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -30,41 +30,28 @@ class ShotsAdapter(private val context: Context, private val shotList: List<Shot
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        Glide.with(context).load(shotList[position].images!!.normal).into(holder.shotImage)
-        holder.shotTitle.text = StringUtils.SubString(shotList[position].title, 12)
-        holder.shotUser.text = shotList[position].user!!.name.toString()
-        holder.itemView.setOnClickListener { onCLickSubject.onNext(shotList[position].id) }
-        holder.shotAnimated.visibility = if (shotList[position].animated!!) View.VISIBLE else View.GONE
+        Glide.with(context).load(myShotItems[position].images.normal).into(holder.shotImage)
+        holder.shotTitle.text = StringUtils.SubString(myShotItems[position].title, 12)
+        holder.shotUser.text = myShotItems[position].user.name
+        holder.itemView.setOnClickListener { onCLickSubject.onNext(myShotItems[position].id) }
+        holder.shotAnimated.visibility = if (myShotItems[position].animated) View.VISIBLE else View.GONE
     }
 
     override fun getItemCount(): Int {
-        return shotList.size
+        return myShotItems.size
     }
 
     inner class MyViewHolder(inflate: View) : RecyclerView.ViewHolder(inflate) {
-        internal var shotImage: ImageView
-        internal var shotTitle: TextView
-        internal var shotUser: TextView
-        internal var shotAnimated: TextView
-        internal var bottomList: RelativeLayout
-
-        init {
-            shotImage = inflate.findViewById(R.id.image_normal) as ImageView
-            shotTitle = inflate.findViewById(R.id.shotTitle) as TextView
-            shotUser = inflate.findViewById(R.id.shotUser) as TextView
-            bottomList = inflate.findViewById(R.id.bottomList) as RelativeLayout
-            shotAnimated = inflate.findViewById(R.id.shotAnimated) as TextView
-        }
-
+        internal var shotImage: ImageView = inflate.findViewById(R.id.image_normal) as ImageView
+        internal var shotTitle: TextView = inflate.findViewById(R.id.shotTitle) as TextView
+        internal var shotUser: TextView = inflate.findViewById(R.id.shotUser) as TextView
+        internal var shotAnimated: TextView = inflate.findViewById(R.id.shotAnimated) as TextView
     }
 
     fun addShots(shots: List<Shot>){
-        val initPosition = myShotItems.size - 1
-        myShotItems.removeAt(initPosition)
-        notifyItemRemoved(initPosition)
-
+        val initPosition = myShotItems.size
         myShotItems.addAll(shots)
-        notifyItemRangeChanged(initPosition, myShotItems.size + 1)
+        notifyItemInserted(initPosition)
     }
 
 
